@@ -1,40 +1,41 @@
 import Phaser from '../../phaser';
 
-function hexPoly(x, y, size) {
-  let side = 0;
-  let points = [];
-  for (side; side < 7; side++) {
-    points.push(
-      new Phaser.Point(
-        x + size * Math.cos(side * 2 * Math.PI / 6),
-        y + size * Math.sin(side * 2 * Math.PI / 6)
-      )
-    );
-  }
-  return new Phaser.Polygon(points);
-}
+const textureMap = {
+  empty: ['hex', 'hex-active'],
+  grass: ['hex-grass', 'hex-grass-active'],
+  water: ['hex-water', 'hex-water-active'],
+};
 
-export default class HexTile {
-  constructor(game, x, y, size) {
-    this.poly = hexPoly(x, y, size);
+const textureStateMap = ['default', 'active'];
+
+const getTexture = (texture = 'empty', state = 'default') => {
+  const stateIndex = textureStateMap.indexOf(state);
+  if (stateIndex > -1 && texture in textureMap) {
+    return textureMap[texture][stateIndex];
   }
-  getPoly() {
-    return this.poly;
+  return 'hex';
+};
+
+export default class HexTile extends Phaser.Sprite {
+  constructor(game, x, y, texture = 'empty') {
+    super(game, x, y, getTexture(texture));
+    this.startingTexture = texture;
+    this.currentTexture = this.startingTexture;
+    this.anchor.x = 0.5;
+    this.anchor.y = 0.5;
+    this.inputEnabled = true;
+    this.input.useHandCursor = true;
+    this.events.onInputOut.add(this.rollOut, this);
+    this.events.onInputOver.add(this.rollOver, this);
+
+    this.autoCull = true; // perf attempt 100+
   }
-  // EXAMPLE METHODS
   rollOut() {
-    this.scale.x = 1;
-    this.scale.y = 1;
+    this.currentTexture = getTexture(this.startingTexture);
+    this.loadTexture(this.currentTexture, 0);
   }
-  // EXAMPLE METHODS
   rollOver() {
-    this.scale.x = 0.9;
-    this.scale.y = 0.9;
-  }
-  // EXAMPLE METHODS
-  scaleHexagons(scale) {
-    this.hexagonGroup.forEach(function(hexagon) {
-      this.game.add.tween(hexagon.scale).to({ x: scale, y: scale }, 800, 'Linear', true);
-    }, this);
+    this.currentTexture = getTexture(this.startingTexture, 'active');
+    this.loadTexture(this.currentTexture, 0);
   }
 }

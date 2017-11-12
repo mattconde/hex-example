@@ -5,6 +5,7 @@
   "dependencies": {
     "p2": "^0.7.1",
     "phaser-ce": "^2.9.1",
+    "phaser-kinetic-scrolling-plugin": "^1.0.4",
     "polished": "^1.8.1",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",

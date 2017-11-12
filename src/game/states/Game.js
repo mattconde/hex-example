@@ -1,59 +1,46 @@
 import Phaser from '../../phaser';
 import { runIfDev } from '../utils';
-import HexTile from '../objects/HexTile';
-import HexGrid from '../objects/HexGrid';
-
-let count = 0;
-
-function renderHex(game, points) {
-  let gridGraphics = game.add.graphics();
-  gridGraphics.beginFill(0xff33ff);
-  gridGraphics.drawPolygon(points);
-  gridGraphics.endFill();
-  return gridGraphics;
-}
+import Map from '../objects/Map';
 
 export default class extends Phaser.State {
   init() {}
-  preload() {}
-
+  preload() {
+    // perf attempt - remove if not changing anything
+    this.load.path = './assets/';
+    this.load.images([
+      'hex',
+      'hex-active',
+      'hex-grass',
+      'hex-grass-active',
+      'hex-water',
+      'hex-water-active',
+    ]);
+  }
   create() {
-    const bannerText = 'Phaser + ES6 + Webpack';
-    const banner = this.add.text(this.world.centerX, this.game.height - 80, bannerText);
-    banner.font = 'Bangers';
-    banner.padding.set(10, 16);
-    banner.fontSize = 40;
-    banner.fill = '#77BFA3';
-    banner.smoothed = false;
-    banner.anchor.setTo(0.5);
     this.game.time.advancedTiming = true;
-
-    // let hex1 = new HexTile(this.game, 100, 100, 20);
-    // renderHex(this.game, hex1.getPoly().points);
-
-    let grid1 = new HexGrid(this.game, {
-      startX: 100,
-      startY: 100,
+    this.game.kineticScrolling.configure({
+      horizontalScroll: true,
+      verticalScroll: true,
+      horizontalWheel: false,
+      verticalWheel: true,
     });
+    this.game.kineticScrolling.start();
 
-    // grid1.getGridGroup().forEach(h => {
-    //   console.log(h);
-    //   renderHex(this.game, h.getPoly().points);
-    // });
+    let exampleMap = new Map(this.game, {
+      columns: 200,
+      rows: 200,
+    });
+    this.game.add.existing(exampleMap);
+    this.world.setBounds(0, 0, exampleMap.getWidth(), exampleMap.getHeight());
+    this.camera.x = this.world.centerX - this.game.width / 2;
+    this.camera.y = this.world.centerY - this.game.height / 2;
   }
-
-  update() {
-    if (this.input.activePointer.isDown) {
-      count = count + 1;
-      console.log(count);
-    }
-  }
-
+  update() {}
   render() {
     runIfDev(() => {
-      this.game.debug.text(this.game.time.fps, 2, 14, '#00ff00');
+      this.game.debug.text(this.game.time.fps, 2, 14, '#f00');
       this.game.debug.pointer(this.game.input.mousePointer);
-      this.game.debug.pointer(this.game.input.pointer1);
+      this.game.debug.cameraInfo(this.game.camera, 32, 32);
     });
   }
 }
