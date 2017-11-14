@@ -4,18 +4,7 @@ import Map from '../objects/Map';
 
 export default class extends Phaser.State {
   init() {}
-  preload() {
-    // perf attempt - remove if not changing anything
-    this.load.path = './assets/';
-    this.load.images([
-      'hex',
-      'hex-active',
-      'hex-grass',
-      'hex-grass-active',
-      'hex-water',
-      'hex-water-active',
-    ]);
-  }
+  preload() {}
   create() {
     this.game.time.advancedTiming = true;
     this.game.kineticScrolling.configure({
