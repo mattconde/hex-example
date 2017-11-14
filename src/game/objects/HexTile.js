@@ -1,5 +1,6 @@
 import Phaser from '../../phaser';
 
+// move from multiple images to sprite sheets per tile type
 const textureMap = {
   empty: ['hex', 'hex-active'],
   grass: ['hex-grass', 'hex-grass-active'],

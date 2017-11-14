@@ -46,10 +46,10 @@ export default class Splash extends Component {
     const { splashIndex } = this.state;
     let screen = 'ksir';
     if (splashIndex === 0) {
-      screen = 'thatmatt<domain>';
+      screen = 'splash 1';
     }
     if (splashIndex === 1) {
-      screen = 'champistious<procreation>';
+      screen = 'splash 2';
     }
     return (
       <Wrapper>
